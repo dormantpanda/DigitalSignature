@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/signFragment">
+    <fragment
+        android:id="@+id/signFragment"
+        android:name="com.example.digitalsignature.ui.SignFragment"
+        android:label="SignFragment"
+        tools:layout="@layout/fragment_sign"/>
+</navigation>

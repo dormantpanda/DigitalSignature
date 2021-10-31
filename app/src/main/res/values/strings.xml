@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">DigitalSignature</string>
+
+    <string name="button_sign">Подписать</string>
+    <string name="button_check">Проверить</string>
+    <string name="label_enter_key">Введите ключ:</string>
+    <string name="hint_enter_key">Введите ключ</string>
+    <string name="button_choose_file">Выбрать файл</string>
+    <string name="label_no_file">Файл не выбран</string>
+</resources>
