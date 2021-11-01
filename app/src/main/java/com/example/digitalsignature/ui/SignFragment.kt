@@ -52,7 +52,7 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
             lifecycleScope.launchWhenResumed {
                 viewModel.checkPDFSignIText(_uri, requireContext(), requireContext().contentResolver)
                 binding.tvChosenFile.text = _uri.path
-                //viewModel.writeToFile(uri, requireContext().contentResolver)
+                viewModel.writeToFile(uri, requireContext().contentResolver)
             }
         }
     }

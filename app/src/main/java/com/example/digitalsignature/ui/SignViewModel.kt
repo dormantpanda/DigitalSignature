@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.digitalsignature.app.services.*
+import com.tom_roush.pdfbox.pdmodel.PDDocument
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
 import java.io.FileInputStream
@@ -21,7 +22,7 @@ class SignViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    //val pdDocumentLiveData: MutableLiveData<PDDocument> = MutableLiveData()
+    val pdDocumentLiveData: MutableLiveData<PDDocument> = MutableLiveData()
 
     val originalByteArrayLiveData: MutableLiveData<ByteArray> = MutableLiveData()
 
@@ -45,9 +46,9 @@ class SignViewModel @Inject constructor(
 
     fun checkPDFSignIText(uri: Uri, context: Context, contentResolver: ContentResolver) {
         val keys = SigningService.generateKeys()
-        val signingObj = SigningTestIText()
+        val signingObj = SigningTest(context, keys.first.private, arrayOf(keys.second))
         originalByteArrayLiveData.value?.let {
-            signingObj.redButton(it, arrayOf(keys.second),keys.first.private,contentResolver,uri)
+            pdDocumentLiveData.value = signingObj.redButton(it)
         }
     }
 
@@ -55,8 +56,7 @@ class SignViewModel @Inject constructor(
         val pdfByteArray = uriToByteArray(uri, contentResolver)
         val verificationObj =  VerifyingTest2()
         pdfByteArray?.let {
-            verificationObj.redButton(pdfByteArray)
-            //verificationResultLiveData.postValue(verificationObj.redButton(pdfByteArray))
+            verificationResultLiveData.postValue(verificationObj.redButton(pdfByteArray))
         }
     }
 
@@ -66,7 +66,7 @@ class SignViewModel @Inject constructor(
         return byteArray
     }
 
-    /*fun writeToFile(uri: Uri, contentResolver: ContentResolver) {
+    fun writeToFile(uri: Uri, contentResolver: ContentResolver) {
         val pdDocument = pdDocumentLiveData.value
         pdDocument?.let {
             val outputStream = contentResolver.openOutputStream(uri)?: return
@@ -74,5 +74,5 @@ class SignViewModel @Inject constructor(
             it.saveIncremental(outputStream)
             outputStream.close()
         }
-    }*/
+    }
 }
