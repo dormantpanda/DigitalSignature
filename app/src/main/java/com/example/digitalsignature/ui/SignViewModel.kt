@@ -2,77 +2,112 @@ package com.example.digitalsignature.ui
 
 import android.content.ContentResolver
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.provider.MediaStore
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.digitalsignature.app.services.*
+import com.example.digitalsignature.app.services.FilesManager
+import com.example.digitalsignature.app.services.PDFSigningService
+import com.example.digitalsignature.app.services.VerifyingService
+import com.example.digitalsignature.data.Pref
+import com.example.digitalsignature.data.Store
+import com.example.digitalsignature.data.models.CachedPDFDocument
+import com.example.digitalsignature.data.models.SigningSpecs
+import com.example.digitalsignature.data.models.VerificationResult
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import javax.inject.Inject
-
 
 @HiltViewModel
 class SignViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val pdDocumentLiveData: MutableLiveData<PDDocument> = MutableLiveData()
+    private val originalPDFLiveData: MutableLiveData<CachedPDFDocument> = MutableLiveData()
 
-    val originalByteArrayLiveData: MutableLiveData<ByteArray> = MutableLiveData()
+    private val _verificationResultLiveData: MutableLiveData<VerificationResult> = MutableLiveData()
+    val verificationResultLiveData: LiveData<VerificationResult> = _verificationResultLiveData
 
-    val verificationResultLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val _signingStatusLiveData: MutableLiveData<VerificationResult.ResultState> = MutableLiveData()
+    val signingStatusLiveData: LiveData<VerificationResult.ResultState> = _signingStatusLiveData
 
-    /*fun checkPDFSign(uri: Uri, context: Context, contentResolver: ContentResolver) {
-        val pdfByteArray = uriToByteArray(uri, contentResolver)
-        val keys = SigningService.generateKeys()
-        val signingObj = SigningTest(context, keys.first.private, arrayOf(keys.second))
-        pdfByteArray?.let {
-            originalByteArrayLiveData.postValue(it)
-            val pdDocument = signingObj.redButton(pdfByteArray)
-            pdDocumentLiveData.postValue(pdDocument)
-        }
-    }*/
+    @Inject
+    lateinit var filesManager: FilesManager
+
+    @Inject
+    lateinit var pref: Pref
+
+    @Inject
+    lateinit var keyStore: Store
 
     fun cashPDF(uri: Uri, contentResolver: ContentResolver) {
         val pdfByteArray = uriToByteArray(uri, contentResolver)
-        originalByteArrayLiveData.postValue(pdfByteArray)
-    }
-
-    fun checkPDFSignIText(uri: Uri, context: Context, contentResolver: ContentResolver) {
-        val keys = SigningService.generateKeys()
-        val signingObj = SigningTest(context, keys.first.private, arrayOf(keys.second))
-        originalByteArrayLiveData.value?.let {
-            pdDocumentLiveData.value = signingObj.redButton(it)
-        }
-    }
-
-    fun verifyPDFSign(uri: Uri, contentResolver: ContentResolver) {
-        val pdfByteArray = uriToByteArray(uri, contentResolver)
-        val verificationObj =  VerifyingTest2()
         pdfByteArray?.let {
-            verificationResultLiveData.postValue(verificationObj.redButton(pdfByteArray))
+            originalPDFLiveData.postValue(
+                CachedPDFDocument(
+                    filesManager.getFileNameFromUri(uri),
+                    pdfByteArray
+                )
+            )
         }
     }
 
-    fun uriToByteArray(uri: Uri, contentResolver: ContentResolver): ByteArray? {
+    fun signPDF(context: Context) {
+        if (originalPDFLiveData.value == null) {
+            _signingStatusLiveData.postValue(VerificationResult.ResultState.RESULT_EMPTY)
+            return
+        }
+        val keys = generateKeys()
+        val signingObj = PDFSigningService(context, keys.keyPair.private, arrayOf(keys.certificate))
+        val originalPDF = originalPDFLiveData.value
+        if (originalPDF != null) {
+            val pdDocument = signingObj.redButton(originalPDF.contentBA)
+            writeToFile(pdDocument)
+        } else {
+            _signingStatusLiveData.postValue(VerificationResult.ResultState.RESULT_FAIL)
+        }
+    }
+
+    fun verifyPDFSignature() {
+        if (originalPDFLiveData.value == null) {
+            _verificationResultLiveData.postValue(VerificationResult.EMPTY)
+            return
+        }
+        val verificationObj =  VerifyingService()
+        val pdfByteArray = originalPDFLiveData.value
+        pdfByteArray?.let { cachedDoc ->
+            _verificationResultLiveData.postValue(verificationObj.redButton(cachedDoc.contentBA))
+        }
+    }
+
+    private fun uriToByteArray(uri: Uri, contentResolver: ContentResolver): ByteArray? {
         val inputStream = contentResolver.openInputStream(uri) ?: return null
         val byteArray = inputStream.readBytes()
         return byteArray
     }
 
-    fun writeToFile(uri: Uri, contentResolver: ContentResolver) {
-        val pdDocument = pdDocumentLiveData.value
-        pdDocument?.let {
-            val outputStream = contentResolver.openOutputStream(uri)?: return
-            outputStream.write(originalByteArrayLiveData.value)
-            it.saveIncremental(outputStream)
-            outputStream.close()
+    private fun writeToFile(pdDocument: PDDocument) {
+        val originalPDF = originalPDFLiveData.value
+        originalPDF?.let { cachedDoc ->
+            filesManager.writeFile(pdDocument, cachedDoc.name)
+            _signingStatusLiveData.postValue(VerificationResult.ResultState.RESULT_OK)
         }
+    }
+
+    private fun generateKeys(): SigningSpecs {
+        val keyPair = pref.keyPair
+        val certificate = keyStore.certificate
+        if (keyPair == null || certificate == null) {
+            val res = PDFSigningService.generateKeys()
+            pref.keyPair = res.keyPair
+            keyStore.certificate = res.certificate
+            return res
+        }
+        return SigningSpecs(certificate, keyPair)
+    }
+
+    fun clearCache() {
+        originalPDFLiveData.postValue(null)
     }
 }

@@ -77,6 +77,9 @@ dependencies {
 
     //itext (was 'com.itextpdf:itextpdf:5.5.10')
     implementation 'com.itextpdf:itextpdf:5.5.10'
+
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 kapt {

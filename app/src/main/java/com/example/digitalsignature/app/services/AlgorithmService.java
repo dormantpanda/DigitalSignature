@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class SigningService3Java {
+public class AlgorithmService {
     static {
         BouncyCastleProvider bcProvider = new BouncyCastleProvider();
         String name = bcProvider.getName();
@@ -40,7 +40,8 @@ public class SigningService3Java {
         Security.addProvider(bcProvider);
     }
 
-    public static byte[] signData(byte[] data, final X509Certificate signingCertificate, final PrivateKey signingKey) throws CertificateEncodingException, OperatorCreationException, CMSException, IOException {
+    public static byte[] signData(byte[] data, final X509Certificate signingCertificate, final PrivateKey signingKey)
+            throws CertificateEncodingException, OperatorCreationException, CMSException, IOException {
         byte[] signedMessage = null;
         List<X509Certificate> certList = new ArrayList<X509Certificate>();
         CMSTypedData cmsData = new CMSProcessableByteArray(data);
@@ -48,14 +49,19 @@ public class SigningService3Java {
         Store certs = new JcaCertStore(certList);
         CMSSignedDataGenerator cmsGenerator = new CMSSignedDataGenerator();
         ContentSigner contentSigner = new JcaContentSignerBuilder("GOST3411withECGOST3410").build(signingKey);
-        cmsGenerator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()).build(contentSigner, signingCertificate));
+        cmsGenerator.addSignerInfoGenerator(
+                new JcaSignerInfoGeneratorBuilder(
+                        new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()
+                ).build(contentSigner, signingCertificate)
+        );
         cmsGenerator.addCertificates(certs);
         CMSSignedData cms = cmsGenerator.generate(cmsData, true);
         signedMessage = cms.getEncoded();
         return signedMessage;
     }
 
-    public static boolean verifySignData(final byte[] signedData) throws CMSException, IOException, OperatorCreationException, CertificateException {
+    public static boolean verifySignData(final byte[] signedData)
+            throws CMSException, IOException, OperatorCreationException, CertificateException {
         try {
             ByteArrayInputStream bIn = new ByteArrayInputStream(signedData);
             ASN1InputStream aIn = new ASN1InputStream(bIn);
@@ -69,7 +75,9 @@ public class SigningService3Java {
             Collection<X509CertificateHolder> certCollection = certs.getMatches(signer.getSID());
             Iterator<X509CertificateHolder> certIt = certCollection.iterator();
             X509CertificateHolder certHolder = certIt.next();
-            boolean verifResult = signer.verify(new JcaSimpleSignerInfoVerifierBuilder().build(certHolder));
+            boolean verifResult = signer.verify(
+                    new JcaSimpleSignerInfoVerifierBuilder().build(certHolder)
+            );
             if (!verifResult) {
                 return false;
             }
@@ -78,6 +86,4 @@ public class SigningService3Java {
             return false;
         }
     }
-
-
 }

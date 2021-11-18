@@ -1,89 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <RadioGroup
-        android:id="@+id/rgSwitch"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:layout_height="wrap_content">
 
-        <RadioButton
-            android:id="@+id/rbSign"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/rgSwitch"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/rbSign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radio_selector"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:paddingHorizontal="32dp"
+                android:text="@string/button_sign"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rbCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radio_selector"
+                android:button="@android:color/transparent"
+                android:paddingHorizontal="32dp"
+                android:text="@string/button_check"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tvInfo"
+            style="@style/Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:background="@drawable/bg_outlined"
+            android:padding="8dp"
+            android:text="@string/text_guide_sign"
+            app:layout_constraintTop_toBottomOf="@id/rgSwitch" />
+
+        <Button
+            android:id="@+id/btFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/button_choose_file"
+            app:layout_constraintTop_toBottomOf="@id/tvInfo" />
+
+        <TextView
+            android:id="@+id/tvChosenFile"
+            style="@style/Text.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/label_no_file"
+            app:layout_constraintTop_toBottomOf="@id/btFile" />
+
+        <Button
+            android:id="@+id/btSign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
             android:text="@string/button_sign"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="32dp"
-            android:background="@drawable/radio_selector"
-            android:button="@android:color/transparent"/>
+            app:layout_constraintTop_toBottomOf="@id/tvChosenFile" />
 
-        <RadioButton
-            android:id="@+id/rbCheck"
+        <LinearLayout
+            android:id="@+id/llVerificationResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_outlined"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/btSign">
+
+            <TextView
+                android:id="@+id/tvVerificationResult"
+                style="@style/Text.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/label_verified" />
+
+            <TextView
+                android:id="@+id/tvSignerName"
+                style="@style/Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="Pavel" />
+
+            <TextView
+                android:id="@+id/tvLocation"
+                style="@style/Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="Russia" />
+
+            <TextView
+                android:id="@+id/tvReason"
+                style="@style/Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="Diploma" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_check"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="32dp"
-            android:background="@drawable/radio_selector"
-            android:button="@android:color/transparent"/>
-    </RadioGroup>
+            android:layout_marginTop="24dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llVerificationResult" />
 
-    <TextView
-        android:id="@+id/tvKeyLabel"
-        style="@style/Text.Bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="24dp"
-        android:text="@string/label_enter_key"
-        app:layout_constraintTop_toBottomOf="@id/rgSwitch"
-        app:layout_constraintStart_toStartOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <EditText
-        android:id="@+id/etKey"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_enter_key"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintTop_toBottomOf="@id/tvKeyLabel"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <Button
-        android:id="@+id/btFile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"
-        android:text="@string/button_choose_file"
-        app:layout_constraintTop_toBottomOf="@id/etKey"/>
-
-    <TextView
-        android:id="@+id/tvChosenFile"
-        style="@style/Text.Bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"
-        android:text="@string/label_no_file"
-        app:layout_constraintTop_toBottomOf="@id/btFile"/>
-
-    <Button
-        android:id="@+id/btSign"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"
-        android:text="@string/button_sign"
-        app:layout_constraintTop_toBottomOf="@id/tvChosenFile"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

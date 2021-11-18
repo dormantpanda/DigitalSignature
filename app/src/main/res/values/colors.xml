@@ -10,4 +10,7 @@
 
     <color name="blue">#1E90FF</color>
     <color name="semi_blue">#321E90FF</color>
+    <color name="red">#FF6000</color>
+    <color name="green">#06AA53</color>
+    <color name="gray">#3E1F1B20</color>
 </resources>
