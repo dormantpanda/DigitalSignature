@@ -1,5 +1,7 @@
 package com.example.digitalsignature.ui
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -41,6 +43,16 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
                     viewModel.cashPDF(_uri, requireContext().contentResolver)
                     binding.tvChosenFile.text = filesManager.getFileNameFromUri(_uri)
                 }
+            }
+        }
+    
+    private val requestWritePermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) {
+                binding.progressBar.isVisible = true
+                viewModel.signPDF(requireContext())
+            } else {
+                showSnackBar(getString(R.string.snackbar_permission_required), isError = true)
             }
         }
 
@@ -93,8 +105,12 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
         binding.tvInfo.text = getString(R.string.text_guide_sign)
 
         binding.btSign.setOnClickListener {
-            binding.progressBar.isVisible = true
-            viewModel.signPDF(requireContext())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                binding.progressBar.isVisible = true
+                viewModel.signPDF(requireContext())
+            } else {
+                requestWritePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
         }
 
         viewModel.clearCache()

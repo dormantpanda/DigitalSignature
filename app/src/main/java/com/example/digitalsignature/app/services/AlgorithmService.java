@@ -40,28 +40,43 @@ public class AlgorithmService {
         Security.addProvider(bcProvider);
     }
 
-    public static byte[] signData(byte[] data, final X509Certificate signingCertificate, final PrivateKey signingKey)
-            throws CertificateEncodingException, OperatorCreationException, CMSException, IOException {
-        byte[] signedMessage = null;
-        List<X509Certificate> certList = new ArrayList<X509Certificate>();
-        CMSTypedData cmsData = new CMSProcessableByteArray(data);
-        certList.add(signingCertificate);
-        Store certs = new JcaCertStore(certList);
-        CMSSignedDataGenerator cmsGenerator = new CMSSignedDataGenerator();
-        ContentSigner contentSigner = new JcaContentSignerBuilder("GOST3411withECGOST3410").build(signingKey);
-        cmsGenerator.addSignerInfoGenerator(
-                new JcaSignerInfoGeneratorBuilder(
-                        new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()
-                ).build(contentSigner, signingCertificate)
-        );
-        cmsGenerator.addCertificates(certs);
-        CMSSignedData cms = cmsGenerator.generate(cmsData, true);
-        signedMessage = cms.getEncoded();
-        return signedMessage;
+    public static byte[] signData(
+            byte[] data,
+            final X509Certificate signingCertificate,
+            final PrivateKey signingKey
+    ) throws CertificateEncodingException, OperatorCreationException, CMSException, IOException {
+        try {
+            byte[] signedMessage = null;
+            List<X509Certificate> certList = new ArrayList<X509Certificate>();
+            CMSTypedData cmsData = new CMSProcessableByteArray(data);
+            certList.add(signingCertificate);
+            Store certs = new JcaCertStore(certList);
+            CMSSignedDataGenerator cmsGenerator = new CMSSignedDataGenerator();
+            ContentSigner contentSigner = new JcaContentSignerBuilder("GOST3411withECGOST3410").build(signingKey);
+            cmsGenerator.addSignerInfoGenerator(
+                    new JcaSignerInfoGeneratorBuilder(
+                            new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()
+                    ).build(contentSigner, signingCertificate)
+            );
+            cmsGenerator.addCertificates(certs);
+            CMSSignedData cms = cmsGenerator.generate(cmsData, true);
+            signedMessage = cms.getEncoded();
+            return signedMessage;
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+        } catch (OperatorCreationException e) {
+            e.printStackTrace();
+        } catch (CMSException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static boolean verifySignData(final byte[] signedData)
-            throws CMSException, IOException, OperatorCreationException, CertificateException {
+    public static boolean verifySignData(
+            final byte[] signedData
+    ) throws CMSException, IOException, OperatorCreationException, CertificateException {
         try {
             ByteArrayInputStream bIn = new ByteArrayInputStream(signedData);
             ASN1InputStream aIn = new ASN1InputStream(bIn);
@@ -82,7 +97,19 @@ public class AlgorithmService {
                 return false;
             }
             return true;
-        } catch (Exception e) {
+        } catch (CMSException e) {
+            return false;
+        }
+        catch (IOException e) {
+            return false;
+        }
+        catch (OperatorCreationException e) {
+            return false;
+        }
+        catch (CertificateException e) {
+            return false;
+        }
+        catch (Exception e) {
             return false;
         }
     }

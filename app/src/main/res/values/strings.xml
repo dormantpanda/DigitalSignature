@@ -11,6 +11,7 @@
     <string name="label_no_file">Файл не выбран</string>
     <string name="snackbar_signed">Выбранный файл подписан</string>
     <string name="snackbar_problem">Произошла ошибка</string>
+    <string name="snackbar_permission_required">Для сохранения файла требуется разрешение</string>
 
     <string name="label_verified">Подпись подтверждена</string>
     <string name="label_not_verified">Подпись не подтверждена</string>
