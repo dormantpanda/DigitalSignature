@@ -135,7 +135,7 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
         binding.progressBar.isVisible = false
         when (result) {
             VerificationResult.ResultState.RESULT_OK -> {
-                showSnackBar(getString(R.string.snackbar_signed))
+                showSnackBar(getString(R.string.snackbar_signed), isSuccess = true)
             }
             VerificationResult.ResultState.RESULT_FAIL -> {
                 showSnackBar(getString(R.string.snackbar_problem), isError = true)
