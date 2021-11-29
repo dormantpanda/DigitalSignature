@@ -12,6 +12,10 @@
     <string name="snackbar_signed">Выбранный файл подписан</string>
     <string name="snackbar_problem">Произошла ошибка</string>
     <string name="snackbar_permission_required">Для сохранения файла требуется разрешение</string>
+    <string name="snackbar_not_auth">Авторизация не пройдена</string>
+    <string name="snackbar_canceled">Процедура отменена</string>
+    <string name="snackbar_too_many_attempts">Слишком много попыток. Повторите позже.</string>
+    <string name="snackbar_no_auth_hardware">На устройстве не обнаружен отпечаток пальца.</string>
 
     <string name="label_verified">Подпись подтверждена</string>
     <string name="label_not_verified">Подпись не подтверждена</string>
@@ -21,4 +25,10 @@
 
     <string name="text_guide_sign">Нажав на соотвествующую кнопку выберите необходимый .pdf файл из предложеного каталога. Для формирования подписанной копии подписанного файла нажмите на кнопку \"Подписать\".\nДля проверки подписи файла смените вкладку в верхней части экрана.</string>
     <string name="text_guide_verify">Нажав на соотвествующую кнопку выберите необходимый .pdf файл из предложеного каталога. Для проверки сущуствующей подписи файла и вывода инкапсулированной информации нажмите на кнопку \"Проверить\".\nДля формирования подписи смените вкладку в верхней части экрана.</string>
+
+
+    <string name="fingerprint_title">Электронная подпись документа</string>
+    <string name="fingerprint_description">Прикоснитесь к сканеру отпечатка пальцев.</string>
+    <string name="fingerprint_negative_button">Отмена</string>
+
 </resources>

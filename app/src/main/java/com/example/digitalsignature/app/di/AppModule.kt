@@ -2,6 +2,7 @@ package com.example.digitalsignature.app.di
 
 import android.content.Context
 import com.example.digitalsignature.app.App
+import com.example.digitalsignature.app.services.BiometricService
 import com.example.digitalsignature.app.services.FilesManager
 import com.example.digitalsignature.data.Pref
 import com.example.digitalsignature.data.Store
@@ -39,6 +40,12 @@ object AppModule {
     fun provideFilesManager(
         @ApplicationContext context: Context
     ) = FilesManager(context)
+
+    @Provides
+    @Singleton
+    fun provideBiometricService(
+        @ApplicationContext context: Context
+    ) = BiometricService(context)
 
     @Provides
     @Singleton

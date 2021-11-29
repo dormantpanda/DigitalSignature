@@ -2,17 +2,18 @@ package com.example.digitalsignature.ui
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.SigningInfo
 import android.net.Uri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.digitalsignature.app.services.FilesManager
-import com.example.digitalsignature.app.services.PDFSigningService
-import com.example.digitalsignature.app.services.VerifyingService
+import com.example.digitalsignature.app.services.*
 import com.example.digitalsignature.data.Pref
 import com.example.digitalsignature.data.Store
 import com.example.digitalsignature.data.models.CachedPDFDocument
+import com.example.digitalsignature.data.models.SigningResult
 import com.example.digitalsignature.data.models.SigningSpecs
 import com.example.digitalsignature.data.models.VerificationResult
 import com.tom_roush.pdfbox.pdmodel.PDDocument
@@ -29,8 +30,8 @@ class SignViewModel @Inject constructor(
     private val _verificationResultLiveData: MutableLiveData<VerificationResult> = MutableLiveData()
     val verificationResultLiveData: LiveData<VerificationResult> = _verificationResultLiveData
 
-    private val _signingStatusLiveData: MutableLiveData<VerificationResult.ResultState> = MutableLiveData()
-    val signingStatusLiveData: LiveData<VerificationResult.ResultState> = _signingStatusLiveData
+    private val _signingStatusLiveData: MutableLiveData<SigningResult> = MutableLiveData()
+    val signingStatusLiveData: LiveData<SigningResult> = _signingStatusLiveData
 
     @Inject
     lateinit var filesManager: FilesManager
@@ -40,6 +41,32 @@ class SignViewModel @Inject constructor(
 
     @Inject
     lateinit var keyStore: Store
+
+    @Inject
+    lateinit var biometricService: BiometricService
+
+    fun initViewModel(context: Context) {
+        biometricService.authResult.observeForever { authRes ->
+            when (authRes) {
+                (SigningResult.AUTH_FAILED) -> {
+                    _signingStatusLiveData.postValue(SigningResult.AUTH_FAILED)
+                }
+                (SigningResult.TOO_MANY_ATTEMPTS) -> {
+                    _signingStatusLiveData.postValue(SigningResult.TOO_MANY_ATTEMPTS)
+                }
+                (SigningResult.AUTH_CANCELED) -> {
+                    _signingStatusLiveData.postValue(SigningResult.AUTH_CANCELED)
+                }
+                (SigningResult.AUTH_ERROR) -> {
+                    _signingStatusLiveData.postValue(SigningResult.AUTH_ERROR)
+                }
+                (SigningResult.AUTH_SUCCESS) -> {
+                    signPDF(context)
+                }
+                else -> {}
+            }
+        }
+    }
 
     fun cashPDF(uri: Uri, contentResolver: ContentResolver) {
         val pdfByteArray = uriToByteArray(uri, contentResolver)
@@ -53,20 +80,29 @@ class SignViewModel @Inject constructor(
         }
     }
 
-    fun signPDF(context: Context) {
-        if (originalPDFLiveData.value == null) {
-            _signingStatusLiveData.postValue(VerificationResult.ResultState.RESULT_EMPTY)
-            return
-        }
+    private fun signPDF(context: Context) {
         val keys = generateKeys()
-        val signingObj = PDFSigningService(context, keys.keyPair.private, arrayOf(keys.certificate))
+        val signingObj =
+            PDFSigningService(context, keys.keyPair.private, arrayOf(keys.certificate))
         val originalPDF = originalPDFLiveData.value
         if (originalPDF != null) {
             val pdDocument = signingObj.redButton(originalPDF.contentBA)
             writeToFile(pdDocument)
         } else {
-            _signingStatusLiveData.postValue(VerificationResult.ResultState.RESULT_FAIL)
+            _signingStatusLiveData.postValue(SigningResult.EMPTY)
         }
+    }
+
+    fun validateFile(fragment: Fragment) {
+        if (originalPDFLiveData.value == null) {
+            _signingStatusLiveData.postValue(SigningResult.EMPTY)
+            return
+        }
+        if (!biometricService.canAuth()) {
+            _signingStatusLiveData.postValue(SigningResult.NO_HARDWARE)
+            return
+        }
+        biometricService.authUser(fragment)
     }
 
     fun verifyPDFSignature() {
@@ -91,7 +127,7 @@ class SignViewModel @Inject constructor(
         val originalPDF = originalPDFLiveData.value
         originalPDF?.let { cachedDoc ->
             filesManager.writeFile(pdDocument, cachedDoc.name)
-            _signingStatusLiveData.postValue(VerificationResult.ResultState.RESULT_OK)
+            _signingStatusLiveData.postValue(SigningResult.COMPLETED)
         }
     }
 
