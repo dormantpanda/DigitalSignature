@@ -64,6 +64,9 @@ class BiometricService @Inject constructor (
                         (TOO_MANY_ATTEMPTS_CODE) -> {
                             _authResult.postValue(TOO_MANY_ATTEMPTS)
                         }
+                        (SENSOR_DISABLED) -> {
+                            _authResult.postValue(SigningResult.SENSOR_DISABLED)
+                        }
                         else -> {
                             _authResult.postValue(AUTH_ERROR)
                         }

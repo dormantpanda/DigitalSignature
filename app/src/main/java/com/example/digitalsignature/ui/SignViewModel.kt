@@ -48,20 +48,23 @@ class SignViewModel @Inject constructor(
     fun initViewModel(context: Context) {
         biometricService.authResult.observeForever { authRes ->
             when (authRes) {
+                (SigningResult.AUTH_SUCCESS) -> {
+                    signPDF(context)
+                }
+                (SigningResult.AUTH_CANCELED) -> {
+                    _signingStatusLiveData.postValue(SigningResult.AUTH_CANCELED)
+                }
                 (SigningResult.AUTH_FAILED) -> {
                     _signingStatusLiveData.postValue(SigningResult.AUTH_FAILED)
                 }
                 (SigningResult.TOO_MANY_ATTEMPTS) -> {
                     _signingStatusLiveData.postValue(SigningResult.TOO_MANY_ATTEMPTS)
                 }
-                (SigningResult.AUTH_CANCELED) -> {
-                    _signingStatusLiveData.postValue(SigningResult.AUTH_CANCELED)
-                }
                 (SigningResult.AUTH_ERROR) -> {
                     _signingStatusLiveData.postValue(SigningResult.AUTH_ERROR)
                 }
-                (SigningResult.AUTH_SUCCESS) -> {
-                    signPDF(context)
+                (SigningResult.SENSOR_DISABLED) -> {
+                    _signingStatusLiveData.postValue(SigningResult.SENSOR_DISABLED)
                 }
                 else -> {}
             }

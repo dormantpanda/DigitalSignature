@@ -8,5 +8,6 @@ enum class SigningResult {
     AUTH_CANCELED,
     EMPTY,
     COMPLETED,
-    NO_HARDWARE
+    NO_HARDWARE,
+    SENSOR_DISABLED
 }

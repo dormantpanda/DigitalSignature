@@ -16,6 +16,7 @@
     <string name="snackbar_canceled">Процедура отменена</string>
     <string name="snackbar_too_many_attempts">Слишком много попыток. Повторите позже.</string>
     <string name="snackbar_no_auth_hardware">На устройстве не обнаружен отпечаток пальца.</string>
+    <string name="snackbar_sensor_disabled">Сенсор отпечатка пальца выключен. Авторизуйтесь, чтобы подписать файл.</string>
 
     <string name="label_verified">Подпись подтверждена</string>
     <string name="label_not_verified">Подпись не подтверждена</string>

@@ -133,6 +133,9 @@ class SignFragment : BaseFragment(R.layout.fragment_sign) {
             SigningResult.COMPLETED -> {
                 showSnackBar(getString(R.string.snackbar_signed), isSuccess = true)
             }
+            SigningResult.AUTH_CANCELED -> {
+                showSnackBar(getString(R.string.snackbar_canceled))
+            }
             SigningResult.AUTH_ERROR -> {
                 showSnackBar(getString(R.string.snackbar_problem), isError = true)
             }
@@ -142,11 +145,11 @@ class SignFragment : BaseFragment(R.layout.fragment_sign) {
             SigningResult.TOO_MANY_ATTEMPTS -> {
                 showSnackBar(getString(R.string.snackbar_too_many_attempts), isError = true)
             }
-            SigningResult.AUTH_CANCELED -> {
-                showSnackBar(getString(R.string.snackbar_canceled))
-            }
             SigningResult.NO_HARDWARE -> {
                 showSnackBar(getString(R.string.snackbar_no_auth_hardware), isError = true)
+            }
+            SigningResult.SENSOR_DISABLED -> {
+                showSnackBar(getString(R.string.snackbar_sensor_disabled), isError = true)
             }
             else -> {}
         }
