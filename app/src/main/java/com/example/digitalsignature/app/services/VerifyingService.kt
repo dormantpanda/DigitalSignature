@@ -10,7 +10,7 @@ class VerifyingService {
     fun redButton(pdfByteArray: ByteArray) : VerificationResult {
         val bcProvider = BouncyCastleProvider()
         val name = bcProvider.name
-        Security.removeProvider(name) // remove old instance
+        Security.removeProvider(name)
         Security.addProvider(bcProvider)
 
         val pdfReader = PdfReader(pdfByteArray)

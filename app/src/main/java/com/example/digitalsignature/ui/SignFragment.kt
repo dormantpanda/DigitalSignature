@@ -182,7 +182,7 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
                         resources.getColor(R.color.green, null)
                     }
                     else -> {
-                        resources.getColor(R.color.gray, null) // change color
+                        resources.getColor(R.color.gray, null)
                     }
                 }
 
@@ -195,7 +195,6 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
                 duration = Math.max(calculatedDuration, 2000)
             }
 
-            // форматирование текста
             val snackbarView = snackbar.view
 
             val textViewMessage =
