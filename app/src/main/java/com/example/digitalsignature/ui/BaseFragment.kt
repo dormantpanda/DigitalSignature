@@ -25,7 +25,7 @@ abstract class BaseFragment(@LayoutRes layoutId: Int) : Fragment(layoutId) {
                         resources.getColor(R.color.green, null)
                     }
                     else -> {
-                        resources.getColor(R.color.gray, null) // change color
+                        resources.getColor(R.color.gray, null)
                     }
                 }
 
@@ -38,7 +38,6 @@ abstract class BaseFragment(@LayoutRes layoutId: Int) : Fragment(layoutId) {
                 duration = Math.max(calculatedDuration, 2000)
             }
 
-            // форматирование текста
             val snackbarView = snackbar.view
 
             val textViewMessage =
