@@ -3,6 +3,7 @@ package com.example.digitalsignature.ui
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.TypefaceSpan
@@ -56,6 +57,8 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
             }
         }
 
+    private var isSplashShown = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,6 +70,9 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!isSplashShown) {
+            splashTimer()
+        }
         setListeners()
         binding.tvInfo.setOnClickListener {
             showSnackBar("test")
@@ -169,6 +175,20 @@ class SignFragment : Fragment(R.layout.fragment_sign) {
                 showSnackBar(getString(R.string.label_no_file), isError = true)
             }
         }
+    }
+
+    private fun splashTimer() {
+        object : CountDownTimer(1000, 1000) {
+            override fun onTick(p0: Long) = Unit
+
+            override fun onFinish() {
+                with(binding) {
+                    containerSplash.isVisible = false
+                    containerMain.isVisible = true
+                    isSplashShown = true
+                }
+            }
+        }.start()
     }
 
     private fun showSnackBar(message: String, isError: Boolean = false, isSuccess: Boolean = false) {
