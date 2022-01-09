@@ -32,4 +32,7 @@
     <string name="fingerprint_description">Прикоснитесь к сканеру отпечатка пальцев.</string>
     <string name="fingerprint_negative_button">Отмена</string>
 
+    <!-- Splash screen -->
+    <string name="splash_label_name">Формирование электронной подписи в операционной системы Android</string>
+    <string name="splash_label_credentials">Бабич П.Н.\nСаратов 2022</string>
 </resources>
