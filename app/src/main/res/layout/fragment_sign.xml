@@ -165,7 +165,7 @@
                 android:id="@+id/textViewAppName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="48dp"
+                android:layout_margin="32dp"
                 android:text="@string/splash_label_name"
                 android:textAlignment="center"
                 android:textColor="@color/black"
@@ -185,7 +185,8 @@
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_editor_absoluteX="0dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

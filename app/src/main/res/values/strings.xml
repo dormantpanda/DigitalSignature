@@ -15,7 +15,7 @@
     <string name="snackbar_not_auth">Авторизация не пройдена</string>
     <string name="snackbar_canceled">Процедура отменена</string>
     <string name="snackbar_too_many_attempts">Слишком много попыток. Повторите позже.</string>
-    <string name="snackbar_no_auth_hardware">На устройстве не обнаружен отпечаток пальца.</string>
+    <string name="snackbar_no_auth_hardware">На устройстве не обнаружен сканер отпечатка пальца.</string>
     <string name="snackbar_sensor_disabled">Сенсор отпечатка пальца выключен. Авторизуйтесь, чтобы подписать файл.</string>
 
     <string name="label_verified">Подпись подтверждена</string>
@@ -33,6 +33,6 @@
     <string name="fingerprint_negative_button">Отмена</string>
 
     <!-- Splash screen -->
-    <string name="splash_label_name">Формирование электронной подписи в операционной системы Android</string>
+    <string name="splash_label_name">Формирование электронной подписи на мобильном устройстве при помощи отпечатка пальца</string>
     <string name="splash_label_credentials">Бабич П.Н.\nСаратов 2022</string>
 </resources>
