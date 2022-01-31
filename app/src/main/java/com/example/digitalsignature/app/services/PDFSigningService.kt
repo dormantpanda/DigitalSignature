@@ -27,7 +27,7 @@ class PDFSigningService(private val context: Context): SignatureInterface {
     companion object {
         private const val SIGNER_NAME = "Babich P."
         private const val SIGN_LOCATION = "Russian Federation"
-        private const val SIGN_RESON = "Diploma work"
+        private const val SIGN_REASON = "Diploma work"
 
         private val bcProvider = BouncyCastleProvider()
 
@@ -94,7 +94,7 @@ class PDFSigningService(private val context: Context): SignatureInterface {
         throw RuntimeException("Problem while preparing signature")
     }
 
-    fun redButton(pdfByteArray: ByteArray) : PDDocument{
+    fun redButton(pdfByteArray: ByteArray) : PDDocument {
         val document = pdfByteArray
         val pdDocument: PDDocument = PDDocument.load(document)
         addSignature(pdDocument, pdfByteArray)
@@ -108,7 +108,7 @@ class PDFSigningService(private val context: Context): SignatureInterface {
 
             signature.name = SIGNER_NAME
             signature.location = SIGN_LOCATION
-            signature.reason = SIGN_RESON
+            signature.reason = SIGN_REASON
             signature.signDate = Calendar.getInstance()
 
             val signSize = AlgorithmService

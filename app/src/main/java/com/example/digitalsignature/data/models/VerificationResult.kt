@@ -22,7 +22,7 @@ data class VerificationResult (
     enum class ResultState {
         RESULT_OK,
         RESULT_FAIL,
-        RESULT_EMPTY,
+        RESULT_EMPTY
     }
 
     fun isOk(): Boolean {
